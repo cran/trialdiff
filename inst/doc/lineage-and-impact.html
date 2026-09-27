@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Lineage and impact assessment</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Lineage and impact assessment</h1>
+
+
+
+<div id="the-lineage-model" class="section level2">
+<h2>The lineage model</h2>
+<p>Lineage is a directed graph. An edge <code>from -&gt; to</code> means
+“<code>to</code> depends on <code>from</code>”. Node identifiers follow
+a simple convention:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Identifier</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ADSL</code></td>
+<td>dataset</td>
+</tr>
+<tr class="even">
+<td><code>ADSL.TRT01P</code></td>
+<td>variable</td>
+</tr>
+<tr class="odd">
+<td><code>MMRM</code></td>
+<td>analysis</td>
+</tr>
+<tr class="even">
+<td><code>Table_14_2_1</code></td>
+<td>output</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(trialdiff)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>lineage <span class="ot">&lt;-</span> <span class="fu">define_lineage</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">lineage_edge</span>(<span class="st">&quot;ADSL.TRT01P&quot;</span>, <span class="st">&quot;ADLB.TRT01P&quot;</span>, <span class="at">relationship =</span> <span class="st">&quot;groups_by&quot;</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="fu">lineage_edge</span>(<span class="st">&quot;ADLB.AVAL&quot;</span>, <span class="st">&quot;ADLB.BASE&quot;</span>, <span class="at">relationship =</span> <span class="st">&quot;derives&quot;</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="fu">lineage_edge</span>(<span class="st">&quot;ADLB.AVAL&quot;</span>, <span class="st">&quot;ADLB.CHG&quot;</span>, <span class="at">relationship =</span> <span class="st">&quot;derives&quot;</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="fu">lineage_edge</span>(<span class="st">&quot;ADLB.AVAL&quot;</span>, <span class="st">&quot;MMRM&quot;</span>, <span class="at">relationship =</span> <span class="st">&quot;models&quot;</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">lineage_edge</span>(<span class="st">&quot;MMRM&quot;</span>, <span class="st">&quot;Table_14_2_1&quot;</span>, <span class="at">relationship =</span> <span class="st">&quot;reports&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>lineage</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt; ── trialdiff lineage ───────────────────────────────────────────────────────────</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; 5 edges, 7 nodes</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt; analysis: 1</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; output: 1</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; variable: 5</span></span></code></pre></div>
+<p>Edges can carry a <code>condition</code>, for example
+<code>TRT01P == &quot;Drug A&quot;</code>, which is recorded for transparency but
+not evaluated by the package.</p>
+</div>
+<div id="tracing" class="section level2">
+<h2>Tracing</h2>
+<p><code>trace_dependencies()</code> performs a breadth-first traversal
+and returns the path taken, so every flag can be explained.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">trace_dependencies</span>(lineage, <span class="at">from =</span> <span class="st">&quot;ADLB.AVAL&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 5</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt;   node         node_type depth path                            edge_relationship</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;                           &lt;chr&gt;            </span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; 1 ADLB.BASE    variable      1 ADLB.AVAL -&gt; ADLB.BASE          derives          </span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; 2 ADLB.CHG     variable      1 ADLB.AVAL -&gt; ADLB.CHG           derives          </span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; 3 MMRM         analysis      1 ADLB.AVAL -&gt; MMRM               models           </span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; 4 Table_14_2_1 output        2 ADLB.AVAL -&gt; MMRM -&gt; Table_14_… reports</span></span></code></pre></div>
+<p>Upstream tracing is also supported:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">trace_dependencies</span>(lineage, <span class="at">from =</span> <span class="st">&quot;Table_14_2_1&quot;</span>, <span class="at">direction =</span> <span class="st">&quot;upstream&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 5</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;   node      node_type depth path                              edge_relationship</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;                             &lt;chr&gt;            </span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; 1 MMRM      analysis      1 Table_14_2_1 -&gt; MMRM              reports          </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; 2 ADLB.AVAL variable      2 Table_14_2_1 -&gt; MMRM -&gt; ADLB.AVAL models</span></span></code></pre></div>
+</div>
+<div id="impact-assessment" class="section level2">
+<h2>Impact assessment</h2>
+<p><code>assess_impact()</code> maps classified changes onto the lineage
+graph. Each reached node is graded and given a rationale.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>classified <span class="ot">&lt;-</span> <span class="fu">classify_changes</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">compare_cut</span>(adsl_cut1, adsl_cut2, <span class="at">by =</span> <span class="st">&quot;USUBJID&quot;</span>, <span class="at">dataset =</span> <span class="st">&quot;ADSL&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>impact <span class="ot">&lt;-</span> <span class="fu">assess_impact</span>(classified, adsl_adlb_lineage)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>impact<span class="sc">$</span>impacts[, <span class="fu">c</span>(<span class="st">&quot;node&quot;</span>, <span class="st">&quot;node_type&quot;</span>, <span class="st">&quot;level&quot;</span>, <span class="st">&quot;depth&quot;</span>, <span class="st">&quot;requires_rerun&quot;</span>)]</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 5</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;   node                     node_type level                depth requires_rerun</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                    &lt;chr&gt;     &lt;chr&gt;                &lt;int&gt; &lt;lgl&gt;         </span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; 1 ADLB.TRT01P              variable  definitely_affected      1 FALSE         </span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; 2 ADSL.TRT01A              variable  definitely_affected      1 FALSE         </span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; 3 Efficacy_Set             analysis  potentially_affected     1 TRUE          </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; 4 Safety_Set               analysis  potentially_affected     1 TRUE          </span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; 5 Lab_Summary_By_Treatment analysis  potentially_affected     2 TRUE          </span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 6 MMRM                     analysis  potentially_affected     2 TRUE          </span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 7 Table_14_2_1             output    potentially_affected     3 TRUE          </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 8 Table_14_2_2             output    potentially_affected     3 TRUE</span></span></code></pre></div>
+<p>The grading rules are exposed through [impact_policy()], so a study
+team can agree and document its own conventions.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">impact_policy</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; ── trialdiff impact policy</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; value_direct: &quot;definitely_affected&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; value_indirect: &quot;potentially_affected&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; record: &quot;potentially_affected&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; schema: &quot;potentially_affected&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; label: &quot;unlikely&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; max_depth: Inf</span></span></code></pre></div>
+</div>
+<div id="why-definitely-versus-potentially" class="section level2">
+<h2>Why “definitely” versus “potentially”?</h2>
+<p>A downstream <em>variable</em> that is derived directly from a
+changed variable is marked <code>definitely_affected</code>, because the
+derivation deterministically reads the changed value. Analyses and
+outputs are marked <code>potentially_affected</code>: whether a summary
+or model result actually changes depends on the data and the method, and
+can only be confirmed by rerunning.</p>
+</div>
+<div id="lineage-gaps" class="section level2">
+<h2>Lineage gaps</h2>
+<p>If a changed node has no declared lineage, <code>trialdiff</code>
+does not guess. It lists the gap and asks for review:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>impact<span class="sc">$</span>unlinked</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 2</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;   node  reason                                                                  </span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                                                                   </span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; 1 ADSL  No lineage edge declared for this node; downstream impact cannot be tra…</span></span></code></pre></div>
+<p>This is a feature, not a limitation: the impact assessment is only as
+complete as the lineage metadata, and the report makes that
+explicit.</p>
+</div>
+<div id="generating-lineage-from-metadata" class="section level2">
+<h2>Generating lineage from metadata</h2>
+<p>Hand-authoring lineage does not scale. If you already maintain a
+object (from Define-XML or a specification workbook),
+<code>lineage_from_metadata()</code> derives the data and
+derived-variable portion of the graph from the <code>derivations</code>
+and <code>where</code> metadata:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>mc <span class="ot">&lt;-</span> metacore<span class="sc">::</span><span class="fu">define_to_metacore</span>(<span class="st">&quot;define.xml&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>lin <span class="ot">&lt;-</span> <span class="fu">lineage_from_metadata</span>(mc)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">trace_dependencies</span>(lin, <span class="at">from =</span> <span class="st">&quot;ADSL.TRT01P&quot;</span>)</span></code></pre></div>
+<p>Edges carry their provenance, and anything that cannot be resolved is
+listed for review rather than guessed:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">lineage_provenance</span>(lin)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">lineage_review</span>(lin)</span></code></pre></div>
+<p>Analysis and output dependencies are not described by data metadata,
+so that part of the graph is still supplied by the study team and merged
+in.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

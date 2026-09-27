@@ -1,0 +1,38 @@
+Package: trialdiff
+Title: Clinical Trial Data-Cut Change Detection and Impact Assessment
+Version: 0.2.0
+Authors@R: 
+    person("Hirujan", "Rangaraj", email = "hirujanrangaraj@gmail.com",
+           role = c("aut", "cre"))
+Description: A transparent, rule-based framework for detecting changes between
+    successive data cuts of clinical trial datasets, classifying those changes
+    into clinically meaningful categories, tracing user-defined data lineage,
+    and assessing which downstream analyses and outputs may be affected.
+    The package is designed to complement existing low-level data frame
+    comparison tools by adding clinical-trial-specific classification, lineage
+    and impact-assessment layers on top of deterministic comparison. The
+    rule-based classification is similar in spirit to the data validation
+    infrastructure of van der Loo and de Jonge (2021)
+    <doi:10.18637/jss.v097.i10>.
+License: MIT + file LICENSE
+URL: https://github.com/Hirujan-R/trialdiff,
+        https://Hirujan-R.github.io/trialdiff/
+BugReports: https://github.com/Hirujan-R/trialdiff/issues
+Depends: R (>= 4.1)
+Imports: cli, dplyr, htmltools, jsonlite, rlang, tibble
+Suggests: admiral, cards, covr, diffdf, haven, igraph, knitr, lintr,
+        metacore, pharmaverseadam, pharmaversesdtm, pkgdown, rmarkdown,
+        rtables, styler, tern, testthat (>= 3.0.0), waldo, withr
+Config/testthat/edition: 3
+Config/Needs/website: pkgdown
+Encoding: UTF-8
+Language: en-GB
+LazyData: true
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0
+NeedsCompilation: no
+Packaged: 2026-09-16 10:10:19 UTC; Hirujan
+Author: Hirujan Rangaraj [aut, cre]
+Maintainer: Hirujan Rangaraj <hirujanrangaraj@gmail.com>
+Repository: CRAN
+Date/Publication: 2026-09-27 16:30:02 UTC

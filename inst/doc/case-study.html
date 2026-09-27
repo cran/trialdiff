@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Case study: data-cut review on public ADaM data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Case study: data-cut review on public ADaM
+data</h1>
+
+
+
+<p>This case study runs the full <code>trialdiff</code> pipeline on the
+public <code>pharmaverseadam</code> datasets: two data cuts are
+compared, changes are classified, lineage is generated from metadata and
+an output registry, downstream impact is assessed, and a review report
+is produced. No proprietary data is used.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(trialdiff)</span></code></pre></div>
+<div id="the-two-data-cuts" class="section level2">
+<h2>The two data cuts</h2>
+<p>We use <code>ADSL</code> and a subset of <code>ADLB</code> (three
+laboratory parameters) and build a later cut that introduces the kinds
+of changes seen in practice: two new subjects, a treatment-assignment
+correction, a corrected laboratory value and a value that becomes
+missing.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;AST&quot;</span>, <span class="st">&quot;CREAT&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>adsl_full <span class="ot">&lt;-</span> pharmaverseadam<span class="sc">::</span>adsl</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>adlb_full <span class="ot">&lt;-</span> <span class="fu">subset</span>(pharmaverseadam<span class="sc">::</span>adlb, PARAMCD <span class="sc">%in%</span> params)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>subjects <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">as.character</span>(adsl_full<span class="sc">$</span>USUBJID))</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>new_subjects <span class="ot">&lt;-</span> <span class="fu">tail</span>(subjects, <span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>adsl_cut1 <span class="ot">&lt;-</span> adsl_full[<span class="sc">!</span>adsl_full<span class="sc">$</span>USUBJID <span class="sc">%in%</span> new_subjects, ]</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>adlb_cut1 <span class="ot">&lt;-</span> adlb_full[<span class="sc">!</span>adlb_full<span class="sc">$</span>USUBJID <span class="sc">%in%</span> new_subjects, ]</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>adsl_cut2 <span class="ot">&lt;-</span> adsl_full</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>adlb_cut2 <span class="ot">&lt;-</span> adlb_full</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>trt_subject <span class="ot">&lt;-</span> adsl_cut2<span class="sc">$</span>USUBJID[<span class="fu">which</span>(adsl_cut2<span class="sc">$</span>TRT01P <span class="sc">==</span> <span class="st">&quot;Placebo&quot;</span>)[<span class="dv">1</span>]]</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">&quot;TRT01P&quot;</span>, <span class="st">&quot;TRT01A&quot;</span>)) {</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  adsl_cut2[[v]][adsl_cut2<span class="sc">$</span>USUBJID <span class="sc">==</span> trt_subject] <span class="ot">&lt;-</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>}</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">&quot;TRT01P&quot;</span>, <span class="st">&quot;TRTP&quot;</span>)) {</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>  adlb_cut2[[v]][adlb_cut2<span class="sc">$</span>USUBJID <span class="sc">==</span> trt_subject] <span class="ot">&lt;-</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>}</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="fu">which</span>(adlb_cut2<span class="sc">$</span>USUBJID <span class="sc">==</span> trt_subject <span class="sc">&amp;</span> adlb_cut2<span class="sc">$</span>PARAMCD <span class="sc">==</span> <span class="st">&quot;ALT&quot;</span> <span class="sc">&amp;</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>             adlb_cut2<span class="sc">$</span>AVISIT <span class="sc">==</span> <span class="st">&quot;Week 4&quot;</span>)[<span class="dv">1</span>]</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>adlb_cut2<span class="sc">$</span>AVAL[i] <span class="ot">&lt;-</span> adlb_cut2<span class="sc">$</span>AVAL[i] <span class="sc">+</span> <span class="dv">7</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>adlb_cut2<span class="sc">$</span>CHG[i] <span class="ot">&lt;-</span> adlb_cut2<span class="sc">$</span>AVAL[i] <span class="sc">-</span> adlb_cut2<span class="sc">$</span>BASE[i]</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>j <span class="ot">&lt;-</span> <span class="fu">which</span>(adlb_cut2<span class="sc">$</span>PARAMCD <span class="sc">==</span> <span class="st">&quot;AST&quot;</span> <span class="sc">&amp;</span> adlb_cut2<span class="sc">$</span>AVISIT <span class="sc">==</span> <span class="st">&quot;Week 2&quot;</span>)[<span class="dv">1</span>]</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>adlb_cut2<span class="sc">$</span>AVAL[j] <span class="ot">&lt;-</span> <span class="cn">NA_real_</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>adlb_cut2<span class="sc">$</span>CHG[j] <span class="ot">&lt;-</span> <span class="cn">NA_real_</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="fu">c</span>(<span class="at">adsl =</span> <span class="fu">nrow</span>(adsl_cut2) <span class="sc">-</span> <span class="fu">nrow</span>(adsl_cut1), <span class="at">adlb =</span> <span class="fu">nrow</span>(adlb_cut2) <span class="sc">-</span> <span class="fu">nrow</span>(adlb_cut1))</span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; adsl adlb </span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt;    2   51</span></span></code></pre></div>
+</div>
+<div id="lineage-from-metadata-plus-a-registry" class="section level2">
+<h2>Lineage from metadata plus a registry</h2>
+<p>The data and derived-variable portion of the lineage comes from a
+small metadata specification (the same shape as a <code>metacore</code>
+object). Analyses and outputs are declared with
+<code>output_registry()</code> and grafted on with
+<code>overrides</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>metadata <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">ds_spec =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">dataset =</span> <span class="fu">c</span>(<span class="st">&quot;ADSL&quot;</span>, <span class="st">&quot;ADLB&quot;</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">c</span>(<span class="st">&quot;Subject-Level Analysis&quot;</span>, <span class="st">&quot;Laboratory Analysis&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  ),</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">ds_vars =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="at">dataset =</span> <span class="fu">c</span>(<span class="st">&quot;ADSL&quot;</span>, <span class="st">&quot;ADSL&quot;</span>, <span class="st">&quot;ADSL&quot;</span>, <span class="st">&quot;ADLB&quot;</span>, <span class="st">&quot;ADLB&quot;</span>, <span class="st">&quot;ADLB&quot;</span>, <span class="st">&quot;ADLB&quot;</span>, <span class="st">&quot;ADLB&quot;</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">variable =</span> <span class="fu">c</span>(<span class="st">&quot;USUBJID&quot;</span>, <span class="st">&quot;TRT01P&quot;</span>, <span class="st">&quot;SAFFL&quot;</span>, <span class="st">&quot;USUBJID&quot;</span>, <span class="st">&quot;PARAMCD&quot;</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>                 <span class="st">&quot;TRT01P&quot;</span>, <span class="st">&quot;AVAL&quot;</span>, <span class="st">&quot;CHG&quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  ),</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">value_spec =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="at">dataset =</span> <span class="fu">c</span>(<span class="st">&quot;ADSL&quot;</span>, <span class="st">&quot;ADLB&quot;</span>, <span class="st">&quot;ADLB&quot;</span>, <span class="st">&quot;ADLB&quot;</span>, <span class="st">&quot;ADLB&quot;</span>),</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="at">variable =</span> <span class="fu">c</span>(<span class="st">&quot;TRT01P&quot;</span>, <span class="st">&quot;TRT01P&quot;</span>, <span class="st">&quot;AVAL&quot;</span>, <span class="st">&quot;BASE&quot;</span>, <span class="st">&quot;CHG&quot;</span>),</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="at">derivation_id =</span> <span class="fu">c</span>(<span class="st">&quot;MT.ADSL.TRT01P&quot;</span>, <span class="st">&quot;MT.ADLB.TRT01P&quot;</span>, <span class="st">&quot;MT.ADLB.AVAL&quot;</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>                      <span class="st">&quot;MT.ADLB.BASE&quot;</span>, <span class="st">&quot;MT.ADLB.CHG&quot;</span>),</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="at">where =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">&quot;PARAMCD == &#39;ALT&#39;&quot;</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  ),</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  <span class="at">derivations =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>    <span class="at">derivation_id =</span> <span class="fu">c</span>(<span class="st">&quot;MT.ADSL.TRT01P&quot;</span>, <span class="st">&quot;MT.ADLB.TRT01P&quot;</span>, <span class="st">&quot;MT.ADLB.AVAL&quot;</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>                      <span class="st">&quot;MT.ADLB.BASE&quot;</span>, <span class="st">&quot;MT.ADLB.CHG&quot;</span>),</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>    <span class="at">derivation =</span> <span class="fu">c</span>(<span class="st">&quot;DM.ARM&quot;</span>, <span class="st">&quot;ADSL.TRT01P&quot;</span>, <span class="st">&quot;LB.LBSTRESN&quot;</span>, <span class="st">&quot;ADLB.AVAL&quot;</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>                   <span class="st">&quot;AVAL - BASE&quot;</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>  )</span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>)</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>registry <span class="ot">&lt;-</span> <span class="fu">output_registry</span>(</span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>  <span class="fu">td_output</span>(<span class="st">&quot;Lab_Summary_By_Treatment&quot;</span>,</span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>            <span class="at">depends_on =</span> <span class="fu">c</span>(<span class="st">&quot;ADLB.TRT01P&quot;</span>, <span class="st">&quot;ADLB.AVAL&quot;</span>),</span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>            <span class="at">type =</span> <span class="st">&quot;analysis&quot;</span>, <span class="at">relationship =</span> <span class="st">&quot;summarises&quot;</span>),</span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>  <span class="fu">td_output</span>(<span class="st">&quot;MMRM&quot;</span>, <span class="at">depends_on =</span> <span class="fu">c</span>(<span class="st">&quot;ADLB.AVAL&quot;</span>, <span class="st">&quot;ADLB.CHG&quot;</span>)),</span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>  <span class="fu">td_output</span>(<span class="st">&quot;Table_14_2_1&quot;</span>, <span class="at">depends_on =</span> <span class="st">&quot;Lab_Summary_By_Treatment&quot;</span>,</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>            <span class="at">type =</span> <span class="st">&quot;output&quot;</span>),</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>  <span class="fu">td_output</span>(<span class="st">&quot;Table_14_2_2&quot;</span>, <span class="at">depends_on =</span> <span class="st">&quot;MMRM&quot;</span>, <span class="at">type =</span> <span class="st">&quot;output&quot;</span>)</span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a>)</span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a>lineage <span class="ot">&lt;-</span> <span class="fu">lineage_from_metadata</span>(metadata, <span class="at">overrides =</span> registry)</span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a>lineage</span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; ── trialdiff lineage ───────────────────────────────────────────────────────────</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; 12 edges, 17 nodes</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; analysis: 2</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; dataset: 2</span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; output: 2</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; variable: 11</span></span></code></pre></div>
+<p>The generated graph reaches from the raw source through derived
+variables to analyses and TLFs, and every edge keeps its provenance:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">lineage_provenance</span>(lineage)[, <span class="fu">c</span>(<span class="st">&quot;from&quot;</span>, <span class="st">&quot;to&quot;</span>, <span class="st">&quot;relationship&quot;</span>, <span class="st">&quot;source&quot;</span>)]</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 12 × 4</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;    from                     to                       relationship source        </span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;                    &lt;chr&gt;                    &lt;chr&gt;        &lt;chr&gt;         </span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;  1 DM.ARM                   ADSL.TRT01P              derives      metacore:deri…</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  2 ADSL.TRT01P              ADLB.TRT01P              derives      metacore:deri…</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  3 LB.LBSTRESN              ADLB.AVAL                derives      metacore:deri…</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;  4 ADLB.PARAMCD             ADLB.AVAL                filters      metacore:where</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;  5 ADLB.AVAL                ADLB.BASE                derives      metacore:deri…</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt;  6 ADLB.AVAL                ADLB.CHG                 derives      metacore:deri…</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;  7 ADLB.TRT01P              Lab_Summary_By_Treatment summarises   registry      </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;  8 ADLB.AVAL                Lab_Summary_By_Treatment summarises   registry      </span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;  9 ADLB.AVAL                MMRM                     models       registry      </span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 10 ADLB.CHG                 MMRM                     models       registry      </span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 11 Lab_Summary_By_Treatment Table_14_2_1             reports      registry      </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 12 MMRM                     Table_14_2_2             reports      registry</span></span></code></pre></div>
+</div>
+<div id="compare-and-classify" class="section level2">
+<h2>Compare and classify</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>adsl_diff <span class="ot">&lt;-</span> <span class="fu">compare_cut</span>(adsl_cut1, adsl_cut2, <span class="at">by =</span> <span class="st">&quot;USUBJID&quot;</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>                         <span class="at">dataset =</span> <span class="st">&quot;ADSL&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">classify_changes</span>()</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>adlb_diff <span class="ot">&lt;-</span> <span class="fu">compare_cut</span>(adlb_cut1, adlb_cut2,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>                         <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;USUBJID&quot;</span>, <span class="st">&quot;PARAMCD&quot;</span>, <span class="st">&quot;AVISIT&quot;</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>                         <span class="at">dataset =</span> <span class="st">&quot;ADLB&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">classify_changes</span>()</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">table</span>(adsl_diff<span class="sc">$</span>register<span class="sc">$</span>category_label),</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Category&quot;</span>, <span class="st">&quot;ADSL&quot;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Category</th>
+<th align="right">ADSL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">New subject</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Treatment-assignment change</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">table</span>(adlb_diff<span class="sc">$</span>register<span class="sc">$</span>category_label),</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Category&quot;</span>, <span class="st">&quot;ADLB&quot;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Category</th>
+<th align="right">ADLB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Derived-variable change</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">New subject</td>
+<td align="right">51</td>
+</tr>
+<tr class="odd">
+<td align="left">Non-missing to missing</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Treatment-assignment change</td>
+<td align="right">78</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="assess-downstream-impact" class="section level2">
+<h2>Assess downstream impact</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>adlb_impact <span class="ot">&lt;-</span> <span class="fu">assess_impact</span>(adlb_diff, lineage)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>adlb_impact<span class="sc">$</span>impacts[, <span class="fu">c</span>(<span class="st">&quot;node&quot;</span>, <span class="st">&quot;node_type&quot;</span>, <span class="st">&quot;level&quot;</span>, <span class="st">&quot;depth&quot;</span>, <span class="st">&quot;requires_rerun&quot;</span>)]</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 × 5</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;   node                     node_type level                depth requires_rerun</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                    &lt;chr&gt;     &lt;chr&gt;                &lt;int&gt; &lt;lgl&gt;         </span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; 1 ADLB.BASE                variable  definitely_affected      1 FALSE         </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; 2 ADLB.CHG                 variable  definitely_affected      1 FALSE         </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; 3 ADLB.AVAL                variable  potentially_affected     1 FALSE         </span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; 4 Lab_Summary_By_Treatment analysis  potentially_affected     1 TRUE          </span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; 5 MMRM                     analysis  potentially_affected     1 TRUE          </span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; 6 Table_14_2_1             output    potentially_affected     2 TRUE          </span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; 7 Table_14_2_2             output    potentially_affected     2 TRUE</span></span></code></pre></div>
+<p>A treatment-assignment change flows to <code>ADLB.TRT01P</code>, the
+by-treatment summary and the MMRM, and every analysis or output is
+flagged for review or rerun. No statistical impact is claimed.</p>
+</div>
+<div id="review-report" class="section level2">
+<h2>Review report</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>report <span class="ot">&lt;-</span> <span class="fu">report_diff</span>(adsl_diff,</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>                      <span class="at">impact =</span> <span class="fu">assess_impact</span>(adsl_diff, lineage),</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>                      <span class="at">output =</span> <span class="st">&quot;list&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>report<span class="sc">$</span>data<span class="sc">$</span>review_items</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;   item           detail                                                    owner</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;                                                     &lt;chr&gt;</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; 1 Rerun required Lab_Summary_By_Treatment (potentially_affected) - Potent… Stat…</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; 2 Rerun required Table_14_2_1 (potentially_affected) - Potentially affect… Stat…</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; 3 Lineage gap    1 changed node(s) have no declared lineage: ADSL.TRT01A.  Prog…</span></span></code></pre></div>
+<p>Writing <code>report_diff(..., output = &quot;cut-review.html&quot;)</code>
+produces a self-contained HTML report, and <code>as_json()</code>
+produces machine-readable output for automated QC pipelines.</p>
+</div>
+<div id="what-this-demonstrates" class="section level2">
+<h2>What this demonstrates</h2>
+<ul>
+<li>Deterministic comparison of two real data cuts, with clinical
+classification.</li>
+<li>Lineage generated from metadata, extended with an analysis/output
+registry.</li>
+<li>Transparent impact assessment that reaches TLFs and never claims
+statistical significance.</li>
+<li>A single workflow: <code>compare_cut()</code> -&gt;
+<code>classify_changes()</code> -&gt;
+<code>lineage_from_metadata()</code> + <code>output_registry()</code>
+-&gt; <code>assess_impact()</code> -&gt;
+<code>report_diff()</code>.</li>
+</ul>
+</div>
+<div id="limitations" class="section level2">
+<h2>Limitations</h2>
+<ul>
+<li>The metadata above is a compact illustration; a real study would
+load it from Define-XML with
+<code>metacore::define_to_metacore()</code>.</li>
+<li>Analysis/output dependencies are not described by data metadata and
+must be supplied by the study team (here, via
+<code>output_registry()</code>).</li>
+<li>Impact is a review signal. Confirming whether a summary or model
+result actually changes requires rerunning it.</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
